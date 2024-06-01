@@ -1,0 +1,89 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#chat-container {
+  width: 500px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+#chat-window {
+  height: 300px;
+  padding: 10px;
+  overflow-y: scroll;
+}
+
+#input-container {
+  padding: 10px;
+  display: flex;
+}
+
+#message-input {
+  flex-grow: 1;
+  padding: 5px;
+}
+
+#send-button {
+  margin-left: 10px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+#users-container {
+  margin-top: 20px;
+  width: 500px;
+}
+
+#users-list {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  height: 150px;
+  overflow-y: scroll;
+}
+
+#users-list .user-item {
+  padding: 5px;
+  cursor: pointer;
+}
+
+#users-list .user-item:hover {
+  background-color: #f0f0f0;
+}
+
+#users-list .user-item.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+#users-list .group-chat-item {
+  font-weight: bold;
+}
+
+#open-notepad-button {
+  margin-left: 10px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color:cadetblue;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+}
