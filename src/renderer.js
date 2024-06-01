@@ -3,7 +3,6 @@ const socket = io('http://192.168.0.18:3000');
 const chatWindow = document.getElementById('chat-window');
 const messageInput = document.getElementById('message-input');
 const sendButton = document.getElementById('send-button');
-const openNotepadButton = document.getElementById('open-notepad-button');
 const usersList = document.getElementById('users-list');
 let selectedUser = null; // Track selected user for private message
 
@@ -14,21 +13,18 @@ messageInput.addEventListener('keypress', (e) => {
   }
 });
 
-openNotepadButton.addEventListener('click', () => {
-  window.api.openNotepad(); // Use the exposed method to open Notepad
-});
-
 function sendMessage() {
   const message = messageInput.value.trim();
   if (message) {
     if (selectedUser) {
       socket.emit('private message', { recipientId: selectedUser, message });
+      openNotepad();
       displayMessage(`You (private to ${selectedUser}): ${message}`, 'private');
     } else {
       socket.emit('chat message', message);
+      openNotepad(); // Open Notepad when a message is sent
     }
     messageInput.value = '';
-    openNotepadButton.style.display = 'block'; // Show the "Open Notepad" button
   }
 }
 
@@ -79,4 +75,17 @@ function displayMessage(message, type = 'normal') {
   }
   chatWindow.appendChild(messageElement);
   chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+// Open Notepad function
+function openNotepad() {
+  fetch('http://192.168.0.18:3000/open-notepad', { method: 'POST' })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to open Notepad');
+      }
+    })
+    .catch(error => {
+      console.error('Error opening Notepad:', error);
+    });
 }

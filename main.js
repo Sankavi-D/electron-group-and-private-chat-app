@@ -1,4 +1,4 @@
-const { app, BrowserWindow,ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs-extra');
 const express = require('express');
@@ -16,6 +16,18 @@ function createServer() {
 
   serverApp.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'index.html'));
+  });
+
+  // Endpoint to open Notepad
+  serverApp.post('/open-notepad', (req, res) => {
+    exec('notepad.exe', (err) => {
+      if (err) {
+        console.error('Failed to open Notepad:', err);
+        res.status(500).send('Failed to open Notepad');
+      } else {
+        res.sendStatus(200);
+      }
+    });
   });
 
   io.on('connection', (socket) => {
@@ -58,31 +70,13 @@ function createWindow() {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'src', 'preload.js'),
-      // nodeIntegration: false, // to use contextBridge for security
-      contextIsolation: true, // to use contextBridge for security
+      contextIsolation: true,
     }
   });
-
-  // Create the resources directory if it doesn't exist
-  // const resourcesPath = path.join(app.getAppPath(), 'resources');
-  // fs.ensureDirSync(resourcesPath);
-
-  // Copy socket.io.js to the resources directory
-  // const srcPath = path.join(__dirname, 'node_modules', 'socket.io', 'client-dist', 'socket.io.js');
-  // const destPath = path.join(resourcesPath, 'socket.io.js');
-  // fs.copyFileSync(srcPath, destPath);
 
   mainWindow.loadFile(path.join(__dirname, 'src', 'index.html'));
 
   // mainWindow.webContents.openDevTools();
-
-  ipcMain.on('open-notepad', () => {
-    exec('notepad.exe', (err) => {
-      if (err) {
-        console.error('Failed to open Notepad:', err);
-      }
-    });
-  });
 }
 
 app.whenReady().then(() => {
@@ -100,4 +94,13 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+// Handle opening Notepad request from renderer process
+ipcMain.on('open-notepad', () => {
+  exec('notepad.exe', (err) => {
+    if (err) {
+      console.error('Failed to open Notepad:', err);
+    }
+  });
 });
